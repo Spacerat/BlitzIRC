@@ -6,6 +6,7 @@ Framework brl.blitz
 Import "irc.bmx"
 
 Import "Modules/debug.bmx"
+Import "Modules/ping.bmx"
 
 Global SBConfig:IRCClientConfig = New IRCClientConfig
 Global SBClient:IRCClient = New IRCClient
