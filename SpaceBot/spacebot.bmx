@@ -5,7 +5,7 @@ Framework brl.blitz
 
 Import "irc.bmx"
 
-Import "plugins/debug.bmx"
+Import "Modules/debug.bmx"
 
 Global SBConfig:IRCClientConfig = New IRCClientConfig
 Global SBClient:IRCClient = New IRCClient
