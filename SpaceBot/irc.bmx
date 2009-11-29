@@ -11,9 +11,16 @@ bbdoc: IRC Event object
 about: This object is passed to IRC hook functions in the same way TEvent is used by BRL.
 EndRem
 Type IRCEvent
-	Field _hookid:Int
 	Field _client:IRCClient
 	Field _data:String
+	Field _hookid:Int
+	
+	Field _hostmask:String
+	Field _user:String
+	Field _host:String
+	Field _command:String
+	Field _middle:String
+	Field _message:String
 	
 	Rem
 	bbdoc: Create an IRC Event object
@@ -28,8 +35,24 @@ Type IRCEvent
 		n._client = client
 		n._data = data
 		
+		n.Parse()
+		
 		Return n
 	EndFunction
+	
+	Method Parse()
+		Local parts:String[]
+		If _data[0] = ":"
+			parts = _data.Split(" ")
+			_hostmask = parts[0].Split(":")[0]
+			_user = parts[0].Split(":")[1].Split("@")[0]
+			_host = parts[0].Split(":")[1].Split("@")[1]
+		End If
+		
+		parts = _data.Split(" :")
+		
+		
+	EndMethod
 	
 '#Region Get/Set methods
 
