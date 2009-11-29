@@ -1,7 +1,8 @@
 
+SuperStrict
+
 Import joe.threadedio
 Import "../irc.bmx"
-
 
 AddHook(IRCClient.OUTHOOK, PrintIRCOutput, Null)
 AddHook(IRCClient.INHOOK, PrintIRCInput, Null)
