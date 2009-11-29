@@ -198,6 +198,9 @@ Type IRCClient
 	Field _stream:TSocketStream
 	Field _utf8:TTextStream
 	Field _running:Int = False
+
+	Field _config:IRCClientConfig
+	Field _nick:String
 	
 	Rem
 		bbdoc: Connect to a server
@@ -213,6 +216,10 @@ Type IRCClient
 		Send("NICK " + config._Nick)
 		Send("USER " + config._Nick + " " + config._Ident + " 8* :" + config._Name)
 		_running = True
+		
+		_config = config
+		_nick = _config._Nick
+		
 	EndMethod
 	
 	Rem
@@ -252,6 +259,18 @@ Type IRCClient
 '#Region Get/Set/Is methods
 	Method IsRunning:Int()
 		Return _running
+	End Method
+	
+	Method GetConfig:IRCClientConfig()
+		Return _config
+	End Method
+	
+	Method GetNick:String()
+		Return _nick
+	End Method
+	
+	Method GetIdent:String()
+		Return _config._Ident
 	End Method
 '#End Region 
 
