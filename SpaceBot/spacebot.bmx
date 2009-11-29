@@ -16,10 +16,16 @@ SBConfig.SetName("SpaceBot")
 SBConfig.SetIdent("spacebot")
 
 SBClient.Connect(SBConfig)
-SBClient.BeginThread()
 SBClient.Send("JOIN #spacebot")
-Global terminate:Int = False
 
-While Not terminate
-	If Input() = "" terminate = 1
-EndWhile
+?threaded
+	SBClient.BeginThread()
+	
+	Global terminate:Int = False
+	
+	While Not terminate
+		If Input() = "" terminate = 1
+	EndWhile
+?Not threaded
+	IRCClientThread(SBClient)
+?
