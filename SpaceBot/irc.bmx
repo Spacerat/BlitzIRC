@@ -34,19 +34,23 @@ Type IRCEvent
 		Local n:IRCEvent = New IRCEvent
 		n._hookid = id
 		n._client = client
-		n._data = data.Trim()
 		
-		n.Parse()
+		n.SetData(data)
 		
 		Return n
 	EndFunction
 	
-	Method Parse()
+	Rem
+	bbdoc: Sets the data associated with this message
+	about: Also parses the data and splits its different parts. 
+	EndRem
+	Method SetData(data:String)
 		Local parts:String[]
 		Local cindex:Int = 0
 		Local params:TList = New TList
+		_data = data
 		parts = _data.Split(" ")
-	'	DebugStop
+
 		If _data[0] = Asc(":")
 			cindex = 1
 			parts = _data[1..].Split(" ")
@@ -59,7 +63,6 @@ Type IRCEvent
 		
 		_command = parts[cindex]
 		If _data.Find(" :") > 0 Then
-			'Local pstring:String
 			_message = _data.Split(" :")[1]
 			parts = _data.Split(" :")[0].Split(" ")
 		EndIf
