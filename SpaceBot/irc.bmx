@@ -5,6 +5,8 @@ Import brl.threads
 Import brl.socketstream
 Import brl.textstream
 Import brl.hook
+Import brl.linkedlist
+Import joe.threadedio
 
 Rem
 bbdoc: IRC Event object
@@ -19,7 +21,7 @@ Type IRCEvent
 	Field _user:String
 	Field _host:String
 	Field _command:String
-	Field _middle:String
+	Field _params:String[]
 	Field _message:String
 	
 	Rem
@@ -33,7 +35,7 @@ Type IRCEvent
 		Local n:IRCEvent = New IRCEvent
 		n._hookid = id
 		n._client = client
-		n._data = data
+		n._data = data.Trim()
 		
 		n.Parse()
 		
@@ -42,15 +44,39 @@ Type IRCEvent
 	
 	Method Parse()
 		Local parts:String[]
-		If _data[0] = ":"
-			parts = _data.Split(" ")
-			_hostmask = parts[0].Split(":")[0]
-			_user = parts[0].Split(":")[1].Split("@")[0]
-			_host = parts[0].Split(":")[1].Split("@")[1]
+		Local cindex:Int = 0
+		Local params:TList = New TList
+		parts = _data.Split(" ")
+	'	DebugStop
+		If _data[0] = Asc(":")
+			cindex = 1
+			parts = _data[1..].Split(" ")
+			_hostmask = parts[0].Split("!")[0]
+			If parts[0].Split("!").Dimensions()[0] > 1
+				_user = parts[0].Split("!")[1].Split("@")[0]
+				_host = parts[0].Split("!")[1].Split("@")[1]
+			EndIf
 		End If
 		
-		parts = _data.Split(" :")
+		_command = parts[cindex]
+		If _data.Find(" :") > 0 Then
+			'Local pstring:String
+			_message = _data.Split(" :")[1]
+			parts = _data.Split(" :")[0].Split(" ")
+		EndIf
 		
+		
+		Local paramcount:Int = 0
+		For Local i:Int = cindex + 1 To parts.Dimensions()[0] - 1
+			If parts[i][0] = Asc(":") Exit
+			paramcount:+1
+		Next
+		
+		_params = New String[paramcount]
+		
+		For Local i:Int = cindex + 1 To parts.Dimensions()[0] - 1
+			_params[i - cindex - 1] = parts[i]
+		Next
 		
 	EndMethod
 	
@@ -141,13 +167,15 @@ Type IRCClient
 	Rem
 		bbdoc: Start the thread
 	EndRem
-	Method BeginThread:TThread()
-		?threaded
+	?threaded
+	Method BeginThread:TThread()	
 		Return TThread.Create(IRCClientThread, Self)
-		?
-		Throw "ERROR: Cannot create an IRC Client thread in non-threaded mode!"
 	End Method
-		
+	?Not threaded
+	Method BeginThread:Object()
+		Return Null
+	End Method
+	?
 	Rem
 		bbdoc: Send a string to the server
 	EndRem
@@ -182,11 +210,15 @@ Rem
 bbdoc: Run an IRC Event in a new thread.
 returns: The new thread
 EndRem
+?threaded
 Function RunIRCHookThread:TThread(event:IRCEvent)
+?Not threaded
+Function RunIRCHookThread:Object(event:IRCEvent)
+?
 	?threaded
 	Return TThread.Create(IRCHookThread, event)
 	?Not threaded
-	IRCHookThread(event)
+	Return IRCHookThread(event)
 	?
 EndFunction
 
