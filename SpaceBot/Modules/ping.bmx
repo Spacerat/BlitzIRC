@@ -9,7 +9,7 @@ Function IRCPingPong:Object(id:Int, data:Object, context:Object)
 	If Not event Return Null
 	
 	If event.GetCommand() = "PING"
-		event.GetClient().Send("PONG")
+		event.GetClient().Send("PONG :"+event._hostmask)
 	End If
 	
 End Function
