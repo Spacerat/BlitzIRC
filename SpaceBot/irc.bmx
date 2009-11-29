@@ -211,7 +211,7 @@ Type IRCClient
 		_utf8 = TTextStream.Create(_stream, TTextStream.UTF8)
 		
 		Send("NICK " + config._Nick)
-		Send("USER " + config._Nick + " 8 * :" + config._Name)
+		Send("USER " + config._Nick + " 8* :" + config._Name)
 		_running = True
 	EndMethod
 	
