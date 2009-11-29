@@ -11,13 +11,17 @@ Import "Modules/ping.bmx"
 Global SBConfig:IRCClientConfig = New IRCClientConfig
 Global SBClient:IRCClient = New IRCClient
 
+?Threaded
+Print "THREADING ENABLED"
+?
+
 SBConfig.SetServer("irc.ajaxlife.net")
 SBConfig.SetNick("SpaceBot")
 SBConfig.SetName("SpaceBot")
 SBConfig.SetIdent("spacebot")
 
 SBClient.Connect(SBConfig)
-SBClient.Send("JOIN #spacebot")
+
 
 ?threaded
 	SBClient.BeginThread()
@@ -25,7 +29,7 @@ SBClient.Send("JOIN #spacebot")
 	Global terminate:Int = False
 	
 	While Not terminate
-		If Input() = "" terminate = 1
+		SBClient.Send(TInput(">"))
 	EndWhile
 ?Not threaded
 	IRCClientThread(SBClient)
