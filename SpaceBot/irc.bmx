@@ -6,7 +6,6 @@ Import brl.socketstream
 Import brl.textstream
 Import brl.hook
 Import brl.linkedlist
-Import joe.threadedio
 
 Rem
 bbdoc: IRC Event object
@@ -83,10 +82,59 @@ Type IRCEvent
 '#Region Get/Set methods
 
 	Rem
-	bbdoc: Get the message data
+	bbdoc: Get the full message string
 	EndRem
 	Method GetData:String()
 		Return _data
+	End Method
+	
+	Rem
+	bbdoc: Get the IRC client object
+	EndRem	
+	Method GetClient:IRCClient()
+		Return _client
+	End Method
+	
+	Rem
+	bbdoc: Get the command string
+	EndRem
+	Method GetCommand:String()
+		Return _command
+	End Method
+	
+	Rem
+	bbdoc: Get an array of parameters
+	EndRem
+	Method GetParams:String[] ()
+		Return _params
+	End Method
+	
+	Rem
+	bbdoc: Get the servername/nickname
+	EndRem
+	Method GetNickname:String()
+		Return _hostmask
+	End Method
+	
+	Rem
+	bbdoc: Get the host address
+	EndRem
+	Method GetHost:String()
+		Return _host
+	End Method
+	
+	Rem
+	bbdoc: Get the message/trailing parameter
+	EndRem
+	Method GetMessage:String()
+		Return _message
+	EndMethod
+	
+	Rem
+	bbdoc: Get the user/ident
+	EndRem
+	Method GetUser:String()
+		Return _user
 	End Method
 '#End Region 
 End Type
@@ -208,7 +256,7 @@ EndType
 
 Rem
 bbdoc: Run an IRC Event in a new thread.
-returns: The new thread
+returns: The new thread in threaded mode, otherwise returns the IRC hook data.
 EndRem
 ?threaded
 Function RunIRCHookThread:TThread(event:IRCEvent)
